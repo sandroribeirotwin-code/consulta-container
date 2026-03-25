@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Consulta de Contêiner – IntegraAqui</title>
+    <style>
+        body { font-family: Arial; background: #f1f1f1; padding: 20px; }
+        .card {
+            background: #fff; padding: 20px; border-radius: 10px;
+            max-width: 540px; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        input, button {
+            width: 100%; padding: 12px; margin-top: 10px;
+            border-radius: 6px; border: 1px solid #ccc;
+        }
+        button {
+            background: #0074d9; color: white; cursor: pointer; font-weight: bold;
+        }
+        button:hover { background: #005fa3; }
+        pre {
+            background: #222; color: #0f0; padding: 12px; 
+            margin-top: 20px; border-radius: 6px; white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Consulta de Contêiner – Santos Brasil</h2>
+
+    <label>Login:</label>
+    <input type="text" id="login" placeholder="Seu login">
+
+    <label>Senha:</label>
+    <input type="password" id="senha" placeholder="Sua senha">
+
+    <label>Número do Contêiner:</label>
+    <input type="text" id="container" placeholder="Ex: MSKU1234567">
+
+    <button onclick="consultar()">Consultar</button>
+
+    <pre id="resultado">Aguardando consulta...</pre>
+</div>
+
+<script>
+async function consultar() {
+    const login = document.getElementById("login").value;
+    const senha = document.getElementById("senha").value;
+    const container = document.getElementById("container").value;
+
+    if (!container) {
+        alert("Informe o número do contêiner");
+        return;
+    }
+
+    const url = "/api/consultaConteiner";  // Vercel cuida do roteamento
+
+    document.getElementById("resultado").textContent = "Consultando...";
+
+    const body = { login, senha, conteiner: container };
+
+    try {
+        const resp = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body)
+        });
+
+        const dados = await resp.json();
+        document.getElementById("resultado").textContent =
+            JSON.stringify(dados, null, 2);
+
+    } catch (e) {
+        document.getElementById("resultado").textContent =
+            "Erro: " + e.toString();
+    }
+}
+</script>
+
+</body>
+</html>
